@@ -1,4 +1,4 @@
-package zeromonos.data;
+package zeromonos.data.statusses;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

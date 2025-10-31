@@ -3,8 +3,8 @@ package zeromonos.data.requests;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
-import zeromonos.data.Residue;
-import zeromonos.data.Status;
+import zeromonos.data.residues.Residue;
+import zeromonos.data.statusses.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +21,7 @@ public class Request {
     @NotNull
     @Column
     @Enumerated(EnumType.STRING)
-    private RequestStatus status;
+    private RequestStatus status = RequestStatus.RECEIVED;
 
     @NotNull
     @Column
@@ -42,12 +42,29 @@ public class Request {
     // Transient state
 
     @Transient
-    private transient RequestState state;
+    private RequestState state;
 
     @PostLoad
     @PostPersist
     private void initState() {
         this.state = RequestStateFactory.getState(this);
+    }
+
+    // Expose behavior
+    public void assign() {
+        getState().assign();
+    }
+
+    public void start() {
+        getState().start();
+    }
+
+    public void complete() {
+        getState().complete();
+    }
+
+    public void cancel() {
+        getState().cancel();
     }
 
     // Getters and Setters

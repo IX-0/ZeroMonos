@@ -1,6 +1,6 @@
 package zeromonos.services;
 
-import zeromonos.data.Residue;
+import zeromonos.data.residues.Residue;
 
 public interface ResidueServiceInterface {
 

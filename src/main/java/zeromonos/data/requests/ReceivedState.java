@@ -25,6 +25,7 @@ public class ReceivedState implements RequestState {
 
     @Override
     public void cancel() {
-        throw new IllegalStateException("Illegal state change.");
+        request.setStatus(RequestStatus.CANCELED);
+        request.setState(RequestStateFactory.getState(request));
     }
 }
