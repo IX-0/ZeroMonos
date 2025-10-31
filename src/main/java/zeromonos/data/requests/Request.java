@@ -21,7 +21,7 @@ public class Request {
     @NotNull
     @Column
     @Enumerated(EnumType.STRING)
-    private RequestStatus status = RequestStatus.RECEIVED;
+    private RequestStatus requestStatus = RequestStatus.RECEIVED;
 
     @NotNull
     @Column
@@ -88,12 +88,12 @@ public class Request {
         this.token = token;
     }
 
-    public RequestStatus getStatus() {
-        return status;
+    public RequestStatus getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setStatus(RequestStatus status) {
-        this.status = status;
+    public void setRequestStatus(RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
     }
 
     public String getMunicipality() {

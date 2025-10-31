@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class ResidueRepositoryTest {
+class ResidueRepositoryTest {
 
     @Autowired
     private TestEntityManager em;
@@ -27,47 +27,45 @@ public class ResidueRepositoryTest {
     private ResidueRepository residueRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         em.clear();
     }
 
     @Test
-    public void whenFindNitroByName_thenReturnNitroResidue() {
-        Residue r = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
+    void whenFindNitroByName_thenReturnNitroResidue() {
+        Residue r0 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
 
-        Optional<Residue> persisted_r = residueRepository.findByName("Nitroglycerin");
-        assertThat(persisted_r).isNotEmpty();
-        assertThat(persisted_r.get()).isEqualTo(r);
+        Optional<Residue> persistedResidue = residueRepository.findByName("Nitroglycerin");
+        assertThat(persistedResidue).isNotEmpty().contains(r0);
     }
 
     @Test
-    public void whenFindTritiumByName_thenReturnInvalidResidue() {
-        Residue r = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
+    void whenFindTritiumByName_thenReturnInvalidResidue() {
+        em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
 
-        Optional<Residue> persisted_r = residueRepository.findByName("Tritium");
-        assertThat(persisted_r).isEmpty();
+        Optional<Residue> persistedResidue = residueRepository.findByName("Tritium");
+        assertThat(persistedResidue).isEmpty();
     }
 
     @Test
-    public void whenFindByValidID_thenReturnValidResidue() {
-        Residue r = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
+    void whenFindByValidID_thenReturnValidResidue() {
+        Residue r0 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
 
-        Optional<Residue> persisted_r = residueRepository.findById(r.getId());
-        assertThat(persisted_r).isNotEmpty();
-        assertThat(persisted_r.get()).isEqualTo(r);
+        Optional<Residue> persistedResidue = residueRepository.findById(r0.getId());
+        assertThat(persistedResidue).isNotEmpty().contains(r0);
     }
 
     @Test
-    public void whenFindByInvalidID_thenReturnInvalidResidue() {
-        Residue r = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
+    void whenFindByInvalidID_thenReturnInvalidResidue() {
+        em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
 
-        Optional<Residue> persisted_r = residueRepository.findById(99999L);
-        assertThat(persisted_r).isEmpty();
+        Optional<Residue> persistedResidue = residueRepository.findById(99999L);
+        assertThat(persistedResidue).isEmpty();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Nitro", "glycerin", "BOOM"})
-    public void whenFindNitroBySimilarNameOrDesc_thenReturnNitroResidue(String search_str) {
+    void whenFindNitroBySimilarNameOrDesc_thenReturnNitroResidue(String search_str) {
         Residue r1 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
         Residue r2 = em.persistFlushFind(new Residue("TNT", "Makes everything go boom", 2f, 5f));
 
@@ -77,7 +75,7 @@ public class ResidueRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"dogs", "cats", "cars"})
-    public void whenFindInvalidBySimilarNameOrDesc_thenReturnInvalidResidue(String search_str) {
+    void whenFindInvalidBySimilarNameOrDesc_thenReturnInvalidResidue(String search_str) {
         Residue r1 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
         Residue r2 = em.persistFlushFind(new Residue("TNT", "Makes everything go boom", 5f, 3f));
 

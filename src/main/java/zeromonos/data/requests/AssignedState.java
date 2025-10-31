@@ -14,7 +14,7 @@ public class AssignedState implements RequestState {
 
     @Override
     public void start() {
-        request.setStatus(RequestStatus.IN_PROGRESS);
+        request.setRequestStatus(RequestStatus.IN_PROGRESS);
         request.setState(RequestStateFactory.getState(request));
     }
 
@@ -25,7 +25,7 @@ public class AssignedState implements RequestState {
 
     @Override
     public void cancel() {
-        request.setStatus(RequestStatus.CANCELED);
+        request.setRequestStatus(RequestStatus.CANCELED);
         request.setState(RequestStateFactory.getState(request));
     }
 }

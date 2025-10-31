@@ -9,7 +9,7 @@ public class ReceivedState implements RequestState {
 
     @Override
     public void assign() {
-        request.setStatus(RequestStatus.ASSIGNED);
+        request.setRequestStatus(RequestStatus.ASSIGNED);
         request.setState(RequestStateFactory.getState(request));
     }
 
@@ -25,7 +25,7 @@ public class ReceivedState implements RequestState {
 
     @Override
     public void cancel() {
-        request.setStatus(RequestStatus.CANCELED);
+        request.setRequestStatus(RequestStatus.CANCELED);
         request.setState(RequestStateFactory.getState(request));
     }
 }

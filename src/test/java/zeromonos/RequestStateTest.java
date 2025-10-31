@@ -8,23 +8,23 @@ import zeromonos.data.requests.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class RequestStateTest {
+class RequestStateTest {
     private Request request;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         request = new Request();
     }
 
     @Test
-    public void GetStateInstancesNewState() {
+    void GetStateInstancesNewState() {
         assertThat(request.getState())
                 .isNotNull()
                 .isInstanceOf(ReceivedState.class);
     }
 
     @Test
-    public void InvalidReceivedStateTest() {
+    void InvalidReceivedStateTest() {
         assertThatThrownBy(request::complete)
                 .isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(request::start)
@@ -32,7 +32,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void InvalidAssignedStateTest() {
+    void InvalidAssignedStateTest() {
         request.assign();
 
         assertThatThrownBy(request::complete)
@@ -42,7 +42,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void InvalidInProgressStateTest() {
+    void InvalidInProgressStateTest() {
         request.assign();
         request.start();
 
@@ -55,7 +55,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void InvalidCompletedStateTest() {
+    void InvalidCompletedStateTest() {
         request.assign();
         request.start();
         request.complete();
@@ -71,7 +71,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void InvalidCanceledStateTest() {
+    void InvalidCanceledStateTest() {
         request.cancel();
 
         assertThatThrownBy(request::start)
@@ -85,14 +85,14 @@ public class RequestStateTest {
     }
 
     @Test
-    public void ValidAssignedStateTest() {
+    void ValidAssignedStateTest() {
         request.assign();
 
         assertThat(request.getState()).isInstanceOf(AssignedState.class);
     }
 
     @Test
-    public void ValidInProgressStateTest() {
+    void ValidInProgressStateTest() {
         request.assign();
         request.start();
 
@@ -100,7 +100,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void ValidCompletedStateTest() {
+    void ValidCompletedStateTest() {
         request.assign();
         request.start();
         request.complete();
@@ -109,7 +109,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void ValidCanceledFromAssignedStateTest() {
+    void ValidCanceledFromAssignedStateTest() {
         request.assign();
         request.cancel();
 
@@ -117,7 +117,7 @@ public class RequestStateTest {
     }
 
     @Test
-    public void ValidCanceledFromReceivedStateTest() {
+    void ValidCanceledFromReceivedStateTest() {
         request.cancel();
 
         assertThat(request.getState()).isInstanceOf(CanceledState.class);

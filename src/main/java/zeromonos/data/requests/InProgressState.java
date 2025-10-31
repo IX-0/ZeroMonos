@@ -19,7 +19,7 @@ public class InProgressState implements RequestState {
 
     @Override
     public void complete() {
-        request.setStatus(RequestStatus.COMPLETED);
+        request.setRequestStatus(RequestStatus.COMPLETED);
         request.setState(RequestStateFactory.getState(request));
     }
 
