@@ -1,3 +1,5 @@
 # External api for municipalities
 
-TODO
+GEO API pt
+
+https://json.geoapi.pt/municipios
