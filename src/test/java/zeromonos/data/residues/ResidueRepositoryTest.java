@@ -62,21 +62,21 @@ class ResidueRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"Nitro", "glycerin", "BOOM"})
-    void whenFindNitroBySimilarNameOrDesc_thenReturnNitroResidue(String search_str) {
+    void whenFindNitroBySimilarNameOrDesc_thenReturnNitroResidue(String searchStr) {
         Residue r1 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
         Residue r2 = em.persistFlushFind(new Residue("TNT", "Makes everything go boom", 2f, 5f));
 
-        List<Residue> residues = residueRepository.findAllBySimilarNameOrDesc(search_str);
+        List<Residue> residues = residueRepository.findAllBySimilarNameOrDesc(searchStr);
         assertThat(residues).isNotEmpty().containsAnyOf(r1, r2);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"dogs", "cats", "cars"})
-    void whenFindInvalidBySimilarNameOrDesc_thenReturnInvalidResidue(String search_str) {
+    void whenFindInvalidBySimilarNameOrDesc_thenReturnInvalidResidue(String searchStr) {
         Residue r1 = em.persistFlushFind(new Residue("Nitroglycerin", 1f, 10f));
         Residue r2 = em.persistFlushFind(new Residue("TNT", "Makes everything go boom", 5f, 3f));
 
-        List<Residue> residues = residueRepository.findAllBySimilarNameOrDesc(search_str);
+        List<Residue> residues = residueRepository.findAllBySimilarNameOrDesc(searchStr);
         assertThat(residues).doesNotContain(r1, r2).isEmpty();
     }
 }

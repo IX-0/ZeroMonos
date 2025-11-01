@@ -17,7 +17,7 @@ public class Status {
     @NotNull
     @Column
     @Enumerated(EnumType.STRING)
-    private RequestStatus status;
+    private RequestStatus requestStatus;
 
     @NotNull
     @Column
@@ -30,8 +30,8 @@ public class Status {
 
     public Status() {}
 
-    public Status(RequestStatus status, LocalDateTime datetime,  Request request) {
-        this.status = status;
+    public Status(RequestStatus requestStatus, LocalDateTime datetime, Request request) {
+        this.requestStatus = requestStatus;
         this.datetime = datetime;
         this.request = request;
     }

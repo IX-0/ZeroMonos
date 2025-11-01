@@ -23,7 +23,7 @@ class RequestRepositoryTest {
     private RequestRepository requestRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         em.clear();
     }
 
