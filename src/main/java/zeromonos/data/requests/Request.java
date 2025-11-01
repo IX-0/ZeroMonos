@@ -3,10 +3,12 @@ package zeromonos.data.requests;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import zeromonos.data.residues.Residue;
 import zeromonos.data.statusses.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,11 +35,33 @@ public class Request {
     private LocalDateTime datetime;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Status> statuses;
+    private List<Status> statuses = new ArrayList<>();
 
     @NotNull
-    @OneToMany
-    private List<Residue> residues;
+    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<Residue> residues = new ArrayList<>();
+
+    // Constructors
+
+    public Request() {}
+
+    public Request(String municipality, LocalDateTime datetime) {
+        this.municipality = municipality;
+        this.datetime = datetime;
+        this.statuses.add(new Status(RequestStatus.RECEIVED, datetime, this));
+    }
+
+    // Add/Remove residues
+
+    public void addResidue(Residue residue) {
+        residues.add(residue);
+        residue.setRequest(this);
+    }
+
+    public void removeResidue(Residue residue) {
+        residues.remove(residue);
+        residue.setRequest(null);
+    }
 
     // Transient state
 
@@ -50,21 +74,30 @@ public class Request {
         this.state = RequestStateFactory.getState(this);
     }
 
-    // Expose behavior
-    public void assign() {
+    // Expose state behavior
+
+    public Request assign() {
         getState().assign();
+        this.statuses.add(new Status(RequestStatus.ASSIGNED, LocalDateTime.now(), this));
+        return this;
     }
 
-    public void start() {
+    public Request start() {
         getState().start();
+        this.statuses.add(new Status(RequestStatus.IN_PROGRESS, LocalDateTime.now(), this));
+        return this;
     }
 
-    public void complete() {
+    public Request complete() {
         getState().complete();
+        this.statuses.add(new Status(RequestStatus.COMPLETED, LocalDateTime.now(), this));
+        return this;
     }
 
-    public void cancel() {
+    public Request cancel() {
         getState().cancel();
+        this.statuses.add(new Status(RequestStatus.CANCELED, LocalDateTime.now(), this));
+        return this;
     }
 
     // Getters and Setters
@@ -84,10 +117,6 @@ public class Request {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public RequestStatus getRequestStatus() {
         return requestStatus;
     }
@@ -100,15 +129,15 @@ public class Request {
         return municipality;
     }
 
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
-    }
-
     public LocalDateTime getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(LocalDateTime date) {
-        this.datetime = date;
+    public List<Residue> getResidues() {
+        return residues;
+    }
+
+    public List<Status> getStatuses() {
+        return statuses;
     }
 }

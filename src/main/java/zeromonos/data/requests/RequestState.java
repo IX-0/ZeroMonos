@@ -4,5 +4,5 @@ public interface RequestState {
     void assign();
     void start();
     void complete();
-     void cancel();
+    void cancel();
 }

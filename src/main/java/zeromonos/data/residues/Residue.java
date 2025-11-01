@@ -65,43 +65,35 @@ public class Residue {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDesc() {
         return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
     public Float getVolume() {
         return volume;
     }
 
-    public void setVolume(Float volume) {
-        this.volume = volume;
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Residue residue = (Residue) o;
-        return Objects.equals(id, residue.id) && Objects.equals(getName(), residue.getName()) && Objects.equals(getDesc(), residue.getDesc()) && Objects.equals(getWeight(), residue.getWeight()) && Objects.equals(getVolume(), residue.getVolume()) && Objects.equals(request, residue.request);
+        return Objects.equals(id, residue.id) && Objects.equals(getName(), residue.getName()) && Objects.equals(getDesc(), residue.getDesc()) && Objects.equals(getWeight(), residue.getWeight()) && Objects.equals(getVolume(), residue.getVolume()) && Objects.equals(getRequest(), residue.getRequest());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, getName(), getDesc(), getWeight(), getVolume(), request);
+        return Objects.hash(id, getName(), getDesc(), getWeight(), getVolume(), getRequest());
     }
 }

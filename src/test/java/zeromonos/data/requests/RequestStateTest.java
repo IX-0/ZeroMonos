@@ -1,9 +1,7 @@
-package zeromonos;
+package zeromonos.data.requests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import zeromonos.data.requests.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,8 +41,7 @@ class RequestStateTest {
 
     @Test
     void InvalidInProgressStateTest() {
-        request.assign();
-        request.start();
+        request.assign().start();
 
         assertThatThrownBy(request::start)
                 .isInstanceOf(IllegalStateException.class);
@@ -56,9 +53,7 @@ class RequestStateTest {
 
     @Test
     void InvalidCompletedStateTest() {
-        request.assign();
-        request.start();
-        request.complete();
+        request.assign().start().complete();
 
         assertThatThrownBy(request::start)
                 .isInstanceOf(IllegalStateException.class);
@@ -93,25 +88,21 @@ class RequestStateTest {
 
     @Test
     void ValidInProgressStateTest() {
-        request.assign();
-        request.start();
+        request.assign().start();
 
         assertThat(request.getState()).isInstanceOf(InProgressState.class);
     }
 
     @Test
     void ValidCompletedStateTest() {
-        request.assign();
-        request.start();
-        request.complete();
+        request.assign().start().complete();
 
         assertThat(request.getState()).isInstanceOf(CompletedState.class);
     }
 
     @Test
     void ValidCanceledFromAssignedStateTest() {
-        request.assign();
-        request.cancel();
+        request.assign().cancel();
 
         assertThat(request.getState()).isInstanceOf(CanceledState.class);
     }

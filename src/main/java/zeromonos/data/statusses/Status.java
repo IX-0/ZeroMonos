@@ -28,4 +28,12 @@ public class Status {
     @JoinColumn
     private Request request;
 
+    public Status() {}
+
+    public Status(RequestStatus status, LocalDateTime datetime,  Request request) {
+        this.status = status;
+        this.datetime = datetime;
+        this.request = request;
+    }
+
 }
