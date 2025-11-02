@@ -10,6 +10,10 @@
 
     <properties>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+
+        <sonar.organization>ix-0</sonar.organization>
+        <sonar.projectKey>IX-0_ZeroMonos</sonar.projectKey>
+
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
