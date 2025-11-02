@@ -1,4 +1,4 @@
-package zeromonos.data.residues;
+package zeromonos.data;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import zeromonos.data.residues.Residue;
+import zeromonos.data.residues.ResidueRepository;
 
 import java.util.List;
 import java.util.Optional;

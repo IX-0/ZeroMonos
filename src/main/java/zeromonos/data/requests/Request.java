@@ -3,13 +3,13 @@ package zeromonos.data.requests;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import zeromonos.data.residues.Residue;
-import zeromonos.data.statusses.Status;
+import zeromonos.data.statuses.Status;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Request {
@@ -117,6 +117,10 @@ public class Request {
         return token;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public RequestStatus getRequestStatus() {
         return requestStatus;
     }
@@ -139,5 +143,23 @@ public class Request {
 
     public List<Status> getStatuses() {
         return statuses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return Objects.equals(getToken(), request.getToken())
+                && getRequestStatus() == request.getRequestStatus()
+                && Objects.equals(getMunicipality(), request.getMunicipality())
+                && Objects.equals(getDatetime(), request.getDatetime())
+                && Objects.equals(getStatuses(), request.getStatuses())
+                && Objects.equals(getResidues(), request.getResidues())
+                && Objects.equals(getState(), request.getState());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getToken(), getRequestStatus(), getMunicipality(), getDatetime(), getState());
     }
 }

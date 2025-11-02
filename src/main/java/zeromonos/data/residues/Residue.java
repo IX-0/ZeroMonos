@@ -94,6 +94,6 @@ public class Residue {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, getName(), getDesc(), getWeight(), getVolume(), getRequest());
+        return Objects.hash(id, getName(), getDesc(), getWeight(), getVolume());
     }
 }
