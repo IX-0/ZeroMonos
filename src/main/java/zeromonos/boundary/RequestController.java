@@ -30,6 +30,14 @@ public class RequestController {
         );
     }
 
+    @GetMapping("/municipality/{query}")
+    public ResponseEntity<List<RequestDTO>> getAllRequestsByMunicipality(@PathVariable("query") String query) {
+        List<Request> requests = requestService.getAllRequestsByMunicipality(query);
+        return ResponseEntity.ok(
+                requests.stream().map(RequestDTO::fromRequestEntity).toList()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<String> createRequest(@RequestBody RequestDTO request) {
         try {
@@ -40,6 +48,8 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 
@@ -72,7 +82,7 @@ public class RequestController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage(), e);
         }
     }
 
@@ -84,7 +94,7 @@ public class RequestController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage(), e);
         }
     }
 
@@ -96,7 +106,7 @@ public class RequestController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage(), e);
         }
     }
 
@@ -108,15 +118,8 @@ public class RequestController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage(), e);
         }
     }
 
-    @GetMapping("/municipality/{query}")
-    public ResponseEntity<List<RequestDTO>> getAllRequests(@PathVariable("query") String query) {
-        List<Request> requests = requestService.getAllRequestsByMunicipality(query);
-        return ResponseEntity.ok(
-                requests.stream().map(RequestDTO::fromRequestEntity).toList()
-        );
-    }
 }

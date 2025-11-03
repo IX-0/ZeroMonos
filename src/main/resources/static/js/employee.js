@@ -1,6 +1,6 @@
 let allRequests = [];
 
-async function loadEmployeeRequests() {
+async function loadRequests() {
     const tbody = document.getElementById('employee-requests-body');
     const filterSelect = document.getElementById('filter-municipality');
 
@@ -47,4 +47,49 @@ function filterRequests() {
     renderRequests(filtered);
 }
 
-document.addEventListener('DOMContentLoaded', loadEmployeeRequests);
+// Load all statuses for a specific request token
+async function loadRequestStatuses(event) {
+    event.preventDefault();
+
+    const token = document.getElementById("status-token").value.trim();
+    const tbody = document.getElementById("status-table-body");
+
+    if (!token) {
+        alert("Please enter a request token.");
+        return;
+    }
+
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">Loading...</td></tr>`;
+
+    try {
+        const response = await fetch(`/api/statuses/request/${token}`);
+        if (!response.ok) {
+            throw new Error(`Request ${token} not found`);
+        }
+
+        const statuses = await response.json();
+        if (!statuses || statuses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No statuses found</td></tr>`;
+            return;
+        }
+
+        // Sort chronologically by datetime
+        statuses.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+        // Render table rows
+        tbody.innerHTML = statuses.map(s => `
+            <tr>
+                <td>${s.id}</td>
+                <td>${s.requestStatus}</td>
+                <td>${new Date(s.datetime).toLocaleString()}</td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading statuses</td></tr>`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadRequests();
+});

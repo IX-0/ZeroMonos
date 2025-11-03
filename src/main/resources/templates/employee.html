@@ -51,6 +51,42 @@
         </div>
     </div>
 
+    <!-- Request Status Timeline -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-secondary text-white">
+            Request Status Timeline
+        </div>
+        <div class="card-body">
+            <!-- Token search -->
+            <form id="status-search-form" class="row g-2 mb-3" onsubmit="loadRequestStatuses(event)">
+                <div class="col-auto">
+                    <label for="status-token" class="col-form-label">Request Token:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="status-token" name="token" class="form-control" placeholder="Enter request token" required>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Load Statuses</button>
+                </div>
+            </form>
+
+            <!-- Table -->
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Date & Time</th>
+                </tr>
+                </thead>
+                <tbody id="status-table-body">
+                <tr><td colspan="3" class="text-center text-muted">No data loaded</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
     <!-- Custom Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-labelledby="customAlertLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

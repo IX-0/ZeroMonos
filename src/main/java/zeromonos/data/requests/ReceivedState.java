@@ -15,12 +15,12 @@ public class ReceivedState implements RequestState {
 
     @Override
     public void start() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override
     public void complete() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override

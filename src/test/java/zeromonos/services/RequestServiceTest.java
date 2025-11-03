@@ -1,4 +1,4 @@
-package zeromonos.services.requests;
+package zeromonos.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import zeromonos.data.requests.Request;
 import zeromonos.data.requests.RequestRepository;
 import zeromonos.data.residues.Residue;
 import zeromonos.data.residues.ResidueRepository;
+import zeromonos.services.requests.RequestService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -77,6 +78,12 @@ class RequestServiceTest {
     }
 
     @Test
+    void createRequest_shouldThrowWhenNoResiduesAreProvided() {
+        assertThatThrownBy(() -> requestService.createRequest(request, List.of()));
+        verify(requestRepository, never()).saveAndFlush(request);
+    }
+
+    @Test
     void createRequest_shouldThrowWhenResidueNotFound() {
         assertThatThrownBy(() -> requestService.createRequest(request, List.of(-1L)))
                 .isInstanceOf(NoSuchElementException.class)
@@ -104,22 +111,13 @@ class RequestServiceTest {
         verify(requestRepository).findRequestByTokenEquals("UNKNOWN");
     }
 
-//    @Test
-//    void deleteRequest_shouldDeleteRequestButNotDeleteResidues() {
-//        request.addResidue(residue1);
-//        request.addResidue(residue2);
-//
-//        requestService.deleteRequest("REQ123");
-//
-//        assertThat(request.getResidues())
-//                .as("Residues should be unlinked from the request")
-//                .isEmpty();
-//
-//        verify(requestRepository).findRequestByTokenEquals("REQ123");
-//        verify(requestRepository).delete(request);
-//
-//        verify(residueRepository, never()).delete(any());
-//    }
+    @Test
+    void deleteRequest_shouldDeleteRequest() {
+        requestService.deleteRequest("REQ123");
+
+        verify(requestRepository, times(1)).deleteByToken("REQ123");
+        verify(requestRepository, times(1)).findRequestByTokenEquals("REQ123");
+    }
 
     @Test
     void deleteRequest_shouldThrowWhenNotFound() {
@@ -138,10 +136,21 @@ class RequestServiceTest {
     }
 
     @Test
+    void cancelRequest_shouldThrowWhenInvalidTransition() {
+        request.assign().start();
+        assertThatThrownBy(() -> requestService.cancelRequest("REQ123"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Illegal state transition");
+
+        verify(requestRepository, never()).save(request);
+    }
+
+    @Test
     void cancelRequest_shouldThrowWhenNotFound() {
         assertThatThrownBy(() -> requestService.cancelRequest("UNKNOWN"))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("Request with Token UNKNOWN not found");
+        verify(requestRepository, never()).save(request);
     }
 
     @Test
@@ -152,10 +161,21 @@ class RequestServiceTest {
     }
 
     @Test
+    void assignRequest_shouldThrowWhenInvalidTransition() {
+        request.assign();
+        assertThatThrownBy(() -> requestService.assignRequest("REQ123"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Illegal state transition");
+
+        verify(requestRepository, never()).save(request);
+    }
+
+    @Test
     void assignRequest_shouldThrowWhenNotFound() {
         assertThatThrownBy(() -> requestService.assignRequest("UNKNOWN"))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("Request with Token UNKNOWN not found");
+        verify(requestRepository, never()).save(request);
     }
 
     @Test
@@ -167,10 +187,20 @@ class RequestServiceTest {
     }
 
     @Test
+    void startRequest_shouldThrowWhenInvalidTransition() {
+        assertThatThrownBy(() -> requestService.startRequest("REQ123"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Illegal state transition");
+
+        verify(requestRepository, never()).save(request);
+    }
+
+    @Test
     void startRequest_shouldThrowWhenNotFound() {
         assertThatThrownBy(() -> requestService.startRequest("UNKNOWN"))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("Request with Token UNKNOWN not found");
+        verify(requestRepository, never()).save(request);
     }
 
     @Test
@@ -182,9 +212,20 @@ class RequestServiceTest {
     }
 
     @Test
+    void completeRequest_shouldThrowWhenInvalidTransition() {
+        assertThatThrownBy(() -> requestService.completeRequest("REQ123"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Illegal state transition");
+
+        verify(requestRepository, never()).save(request);
+    }
+
+    @Test
     void completeRequest_shouldThrowWhenNotFound() {
         assertThatThrownBy(() -> requestService.completeRequest("UNKNOWN"))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("Request with Token UNKNOWN not found");
+
+        verify(requestRepository, never()).save(request);
     }
 }

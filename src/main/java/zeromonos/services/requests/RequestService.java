@@ -24,6 +24,10 @@ public class RequestService implements RequestServiceInterface {
 
     @Override
     public String createRequest(Request request, List<Long> residueIds) {
+        if (residueIds.isEmpty()) {
+            throw new IllegalArgumentException("Argument residueIds cannot be empty");
+        }
+
         for (Long id: residueIds) {
             Optional<Residue> r0 = residueRepository.findById(id);
             if (r0.isPresent()) {
@@ -40,14 +44,7 @@ public class RequestService implements RequestServiceInterface {
         Optional<Request> requestOptional = requestRepository.findRequestByTokenEquals(token);
 
         if (requestOptional.isPresent()) {
-            Request request = requestOptional.get();
-
-            List<Residue> residuesCopy = new ArrayList<>(request.getResidues());
-            for (Residue residue : residuesCopy) {
-                request.removeResidue(residue);
-            }
-
-            requestRepository.delete(request);
+            requestRepository.deleteByToken(token);
         } else {
             throw new NoSuchElementException("Request with Token " + token + " not found");
         }

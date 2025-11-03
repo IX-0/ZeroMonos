@@ -10,6 +10,7 @@ import zeromonos.services.residues.ResidueService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/residues")
@@ -37,9 +38,11 @@ public class ResidueController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Residue> getResidue(@PathVariable("id") Long id) {
-        return residueService.getResidue(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Residue not found"));
+        Optional<Residue> residueOptional = residueService.getResidue(id);
+        if (residueOptional.isPresent()) {
+            return ResponseEntity.ok(residueOptional.get());
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Residue not found");
     }
 
     @DeleteMapping("/{id}")

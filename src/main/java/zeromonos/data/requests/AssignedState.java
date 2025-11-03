@@ -9,7 +9,7 @@ public class AssignedState implements RequestState {
 
     @Override
     public void assign() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override
@@ -20,7 +20,7 @@ public class AssignedState implements RequestState {
 
     @Override
     public void complete() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override

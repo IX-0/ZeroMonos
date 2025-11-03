@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class ResidueServiceTest {
+class ResidueServiceTest {
 
     @Mock
     private ResidueRepository residueRepository;
@@ -34,15 +34,23 @@ public class ResidueServiceTest {
 
     private Residue plastic;
     private Residue wood;
+    private Residue linkedResidue;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         plastic = new Residue("Plastic", "My plastic", 1f, 2f);
         plastic.setId(0L);
 
         wood = new Residue("Wood", "My wood", 1f, 2f);
         wood.setId(1L);
         List<Residue> residues = Arrays.asList(plastic, wood);
+
+        linkedResidue = new Residue("Linked", "Has request", 1f, 1f);
+        linkedResidue.setId(3L);
+        linkedResidue.setRequest(new Request());
+
+        when(residueRepository.findById(linkedResidue.getId()))
+                .thenReturn(Optional.of(linkedResidue));
 
         when(residueRepository.save(plastic)).thenReturn(plastic);
 
@@ -52,14 +60,17 @@ public class ResidueServiceTest {
         when(residueRepository.findById(-1L))
                 .thenReturn(Optional.empty());
 
-        when(residueRepository.findAllBySimilarNameOrDesc("My"))
+        when(residueRepository.findAll())
                 .thenReturn(residues);
+
+        when(residueRepository.findAllBySimilarNameOrDesc("Wood"))
+                .thenReturn(List.of(wood));
         when(residueRepository.findAllBySimilarNameOrDesc(null))
                 .thenReturn(List.of());
     }
 
     @Test
-    public void testCreateResidue_Success() {
+    void createResidue_shouldReturnId() {
         Long id = residueService.createResidue(plastic);
 
         assertThat(id).isEqualTo(plastic.getId());
@@ -67,7 +78,7 @@ public class ResidueServiceTest {
     }
 
     @Test
-    public void testGetResidue_ExistingId() {
+    void getResidue_shouldReturnResidue() {
         Optional<Residue> result = residueService.getResidue(plastic.getId());
 
         assertThat(result).isNotEmpty();
@@ -76,7 +87,7 @@ public class ResidueServiceTest {
     }
 
     @Test
-    public void testGetResidue_NotFound() {
+    void getResidue_shouldReturnNothing() {
         Optional<Residue> residueOptional =  residueService.getResidue(-1L);
 
         assertThat(residueOptional).isEmpty();
@@ -84,7 +95,7 @@ public class ResidueServiceTest {
     }
 
     @Test
-    public void testDeleteResidue_Success() {
+    void deleteResidue_shouldResultInSuccess() {
         residueService.deleteResidue(plastic.getId());
 
         verify(residueRepository, times(1)).findById(plastic.getId());
@@ -92,21 +103,14 @@ public class ResidueServiceTest {
     }
 
     @Test
-    public void testDeleteResidue_NotFound() {
-
+    void deleteResidue_shouldThrowWhenResidueNotFound() {
         assertThatThrownBy(() -> residueService.deleteResidue(-1L)).isInstanceOf(NoSuchElementException.class);
         verify(residueRepository, times(1)).findById(-1L);
         verify(residueRepository, never()).delete(any());
     }
 
     @Test
-    public void testDeleteResidue_AlreadyBelongsToRequest() {
-        Residue linkedResidue = new Residue("Linked", "Has request", 1f, 1f);
-        linkedResidue.setId(3L);
-        linkedResidue.setRequest(new Request());
-
-        when(residueRepository.findById(linkedResidue.getId()))
-                .thenReturn(Optional.of(linkedResidue));
+    void deleteResidue_shouldThrowWhenResidueBelongsToRequest() {
 
         assertThatThrownBy(() -> residueService.deleteResidue(linkedResidue.getId()));
         verify(residueRepository, times(1)).findById(linkedResidue.getId());
@@ -114,18 +118,27 @@ public class ResidueServiceTest {
     }
 
     @Test
-    public void testGetResiduesBySimilarNameOrDesc_ValidQuery() {
-        List<Residue> result = residueService.getResiduesBySimilarNameOrDesc("My");
+    void getResiduesBySimilarNameOrDesc_ValidQuery() {
+        List<Residue> result = residueService.getResiduesBySimilarNameOrDesc("Wood");
 
-        assertThat(result).hasSize(2).contains(plastic, wood);
-        verify(residueRepository, times(1)).findAllBySimilarNameOrDesc("My");
+        assertThat(result).hasSize(1).contains(wood);
+        verify(residueRepository, times(1)).findAllBySimilarNameOrDesc("Wood");
     }
 
     @Test
-    public void testGetResiduesBySimilarNameOrDesc_NullQuery() {
+    void getResiduesBySimilarNameOrDesc_NullQuery() {
         List<Residue> result = residueService.getResiduesBySimilarNameOrDesc(null);
 
         assertThat(result).isEmpty();
         verify(residueRepository, times(1)).findAllBySimilarNameOrDesc(null);
     }
+
+    @Test
+    void getAllResidues() {
+        List<Residue> result = residueService.getAllResidues();
+
+        assertThat(result).hasSize(2).contains(plastic, wood);
+        verify(residueRepository, times(1)).findAll();
+    }
+
 }

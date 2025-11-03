@@ -1,4 +1,4 @@
-package zeromonos.services.statuses;
+package zeromonos.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.mockito.quality.Strictness;
 import zeromonos.data.requests.RequestStatus;
 import zeromonos.data.statuses.Status;
 import zeromonos.data.statuses.StatusRepository;
+import zeromonos.services.statuses.StatusService;
 
 import java.util.List;
 
@@ -27,16 +28,14 @@ class StatusServiceTest {
     @InjectMocks
     private StatusService statusService;
 
-    private Status status1;
-    private Status status2;
     private List<Status> statuses;
 
     @BeforeEach
     void setUp() {
-        status1 = new Status();
-        status1.setId(1L);
-        status2 = new Status();
-        status2.setId(2L);
+        Status status1 = new Status();
+        status1.setId(0L);
+        Status status2 = new Status();
+        status2.setId(1L);
 
         statuses = List.of(status1, status2);
 
@@ -45,6 +44,12 @@ class StatusServiceTest {
 
         when(statusRepository.findAllByRequest_Token("REQ123"))
                 .thenReturn(statuses);
+
+        when(statusRepository.findAllByRequest_TokenAndRequestStatusEquals("REQ999", RequestStatus.COMPLETED))
+                .thenReturn(List.of());
+
+        when(statusRepository.findAllByRequest_Token("REQ999"))
+                .thenReturn(List.of());
     }
 
     @Test
@@ -54,7 +59,7 @@ class StatusServiceTest {
         assertThat(result)
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(status1, status2);
+                .containsAll(statuses);
 
         verify(statusRepository, times(1))
                 .findAllByRequest_TokenAndRequestStatusEquals("REQ123", RequestStatus.ASSIGNED);
@@ -62,15 +67,12 @@ class StatusServiceTest {
 
     @Test
     void getStatus_shouldReturnEmptyListWhenNoStatusesFound() {
-        when(statusRepository.findAllByRequest_TokenAndRequestStatusEquals("REQ456", RequestStatus.COMPLETED))
-                .thenReturn(List.of());
-
-        List<Status> result = statusService.getStatus("REQ456", RequestStatus.COMPLETED);
+        List<Status> result = statusService.getStatus("REQ999", RequestStatus.COMPLETED);
 
         assertThat(result).isEmpty();
 
         verify(statusRepository)
-                .findAllByRequest_TokenAndRequestStatusEquals("REQ456", RequestStatus.COMPLETED);
+                .findAllByRequest_TokenAndRequestStatusEquals("REQ999", RequestStatus.COMPLETED);
     }
 
     @Test
@@ -80,15 +82,13 @@ class StatusServiceTest {
         assertThat(result)
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(status1, status2);
+                .containsAll(statuses);
 
         verify(statusRepository, times(1)).findAllByRequest_Token("REQ123");
     }
 
     @Test
     void getAllStatuses_shouldReturnEmptyListWhenNoStatusesExist() {
-        when(statusRepository.findAllByRequest_Token("REQ999")).thenReturn(List.of());
-
         List<Status> result = statusService.getAllStatuses("REQ999");
 
         assertThat(result).isEmpty();

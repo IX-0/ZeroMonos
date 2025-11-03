@@ -48,7 +48,7 @@ public class Request {
     public Request(String municipality, LocalDateTime datetime) {
         this.municipality = municipality;
         this.datetime = datetime;
-        this.statuses.add(new Status(RequestStatus.RECEIVED, datetime, this));
+        this.statuses.add(new Status(RequestStatus.RECEIVED, LocalDateTime.now(), this));
     }
 
     // Add/Remove residues

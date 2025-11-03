@@ -9,21 +9,21 @@ public class CanceledState implements RequestState {
 
     @Override
     public void assign() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override
     public void start() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override
     public void complete() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 
     @Override
     public void cancel() {
-        throw new IllegalStateException("Illegal state change.");
+        throw new IllegalStateException("Illegal state transition.");
     }
 }

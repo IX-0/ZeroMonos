@@ -59,6 +59,7 @@ async function changeState(token, action) {
     } catch {
         customAlert('danger', 'Network error');
     }
+    await loadRequests();
 }
 
 // === Action button functionality ===

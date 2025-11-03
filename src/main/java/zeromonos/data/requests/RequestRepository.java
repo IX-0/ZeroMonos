@@ -21,4 +21,5 @@ public interface RequestRepository extends JpaRepository<Request, String> {
     @Query("SELECT r.residues FROM Request r WHERE r.token = :requestToken")
     List<Residue> findAllResiduesByRequestId(@Param("requestToken") String requestToken);
 
+    void deleteByToken(String token);
 }
