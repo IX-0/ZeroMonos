@@ -23,13 +23,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RequestController.class)
-public class RequestControllerTest {
+class RequestControllerTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @MockitoBean
-    RequestService requestService;
+    private RequestService requestService;
 
     @Test
     void getAllRequests_shouldReturnList() throws Exception {

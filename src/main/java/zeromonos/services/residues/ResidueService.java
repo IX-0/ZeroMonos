@@ -1,5 +1,6 @@
 package zeromonos.services.residues;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import zeromonos.data.residues.Residue;
 import zeromonos.data.residues.ResidueRepository;
@@ -28,6 +29,7 @@ public class ResidueService implements ResidueServiceInterface {
     }
 
     @Override
+    @Transactional
     public void deleteResidue(Long id){
         Optional<Residue> residueOptional = residueRepository.findById(id);
 

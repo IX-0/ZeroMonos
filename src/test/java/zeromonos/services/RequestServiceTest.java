@@ -79,7 +79,8 @@ class RequestServiceTest {
 
     @Test
     void createRequest_shouldThrowWhenNoResiduesAreProvided() {
-        assertThatThrownBy(() -> requestService.createRequest(request, List.of()));
+        assertThatThrownBy(() -> requestService.createRequest(request, List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
         verify(requestRepository, never()).saveAndFlush(request);
     }
 

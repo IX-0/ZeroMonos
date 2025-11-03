@@ -1,12 +1,12 @@
 package zeromonos.services.requests;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import zeromonos.data.requests.Request;
 import zeromonos.data.requests.RequestRepository;
 import zeromonos.data.residues.Residue;
 import zeromonos.data.residues.ResidueRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -40,6 +40,7 @@ public class RequestService implements RequestServiceInterface {
     }
 
     @Override
+    @Transactional
     public void deleteRequest(String token) {
         Optional<Request> requestOptional = requestRepository.findRequestByTokenEquals(token);
 
